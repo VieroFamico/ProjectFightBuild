@@ -1,9 +1,9 @@
 const cacheName = "Lato Games-ProjectFight-1.0";
 const contentToCache = [
-    "Build/ProjectFightBuild.loader.js",
-    "Build/ProjectFightBuild.framework.js.unityweb",
-    "Build/ProjectFightBuild.data.unityweb",
-    "Build/ProjectFightBuild.wasm.unityweb",
+    "Build/ProjectFightBuild(Uncompressed).loader.js",
+    "Build/ProjectFightBuild(Uncompressed).framework.js",
+    "Build/ProjectFightBuild(Uncompressed).data",
+    "Build/ProjectFightBuild(Uncompressed).wasm",
     "TemplateData/style.css"
 
 ];
