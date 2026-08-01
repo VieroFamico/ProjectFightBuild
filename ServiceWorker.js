@@ -1,33 +1,15 @@
-const cacheName = "Lato Games-ProjectFight-1.0";
-const contentToCache = [
-    "Build/ProjectFightBuild(Uncompressed).loader.js",
-    "Build/ProjectFightBuild(Uncompressed).framework.js",
-    "Build/ProjectFightBuild(Uncompressed).data",
-    "Build/ProjectFightBuild(Uncompressed).wasm",
-    "TemplateData/style.css"
-
-];
-
-self.addEventListener('install', function (e) {
-    console.log('[Service Worker] Install');
-    
-    e.waitUntil((async function () {
-      const cache = await caches.open(cacheName);
-      console.log('[Service Worker] Caching all: app shell and content');
-      await cache.addAll(contentToCache);
-    })());
+// Replacement for the old PWA service worker: wipes its caches, unregisters
+// itself, and reloads any tab it controlled so visitors get the live site.
+self.addEventListener('install', function () {
+    self.skipWaiting();
 });
 
-self.addEventListener('fetch', function (e) {
-    e.respondWith((async function () {
-      let response = await caches.match(e.request);
-      console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
-      if (response) { return response; }
-
-      response = await fetch(e.request);
-      const cache = await caches.open(cacheName);
-      console.log(`[Service Worker] Caching new resource: ${e.request.url}`);
-      cache.put(e.request, response.clone());
-      return response;
-    })());
+self.addEventListener('activate', function (e) {
+    e.waitUntil(
+        caches.keys()
+            .then(function (keys) { return Promise.all(keys.map(function (k) { return caches.delete(k); })); })
+            .then(function () { return self.registration.unregister(); })
+            .then(function () { return self.clients.matchAll({ type: 'window' }); })
+            .then(function (clients) { clients.forEach(function (c) { c.navigate(c.url); }); })
+    );
 });
